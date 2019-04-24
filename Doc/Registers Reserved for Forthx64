@@ -1,0 +1,4 @@
+ Forthx64 requires that registers r12-r15 be preserved across the execution of discrete words. They can be used by any code module, but they must be restored before `nextm` is executed. In addition the x86_64 stack register, rsp, is never touched by Forthx64, except to adjust it for 16-byte alignment during C-function calls.
+
+
+

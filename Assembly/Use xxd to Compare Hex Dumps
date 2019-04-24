@@ -1,0 +1,9 @@
+ When using xxd to produce a hex dump of a module, group by 8 bytes with the -g option, specify four quads per line with the -c 32 option, and use the -e option to reverse the endianness to match that of qdump in Forthx64. The -c option specifies octets per line. To obtain 4 columns of quads, use -c 32. Note that this requires a full screen terminal session.
+
+    xxd -g 8 -c 32 -e <binary>.fcm
+
+ To view a hex-dump of the file in Forthx64, copy the file to the root directory, and use the following commands:
+
+    load-file <binary>.fcm
+    cfib @ dup 8- @ 8/ qdump
+

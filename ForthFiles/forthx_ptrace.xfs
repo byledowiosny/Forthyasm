@@ -1,0 +1,44 @@
+( These utilities are intended for debugging Forthx64. )
+( tpid must be initialized to use these functions. )
+( Note that these utilities assume that the tracee is identical to the tracer. Otherwise sp0 and rp0 will not return the correct addresses for the initial stack pointers. If an int3 instruction would stop execution of the tracer, the program without it could be copied to a new folder and run from there. )
+
+base @ >a dec
+
+variable tpid
+3variable bp
+
+: seize   ( --- ) tpid @ pt_seize ;
+
+: detach  ( --- ) tpid @ pt_detach ;
+
+: freeze   ( --- ) tpid @ pt_interrupt ;
+
+: cont   ( --- ) tpid @ pt_cont ;
+
+: cont_sigwinch ( --- ) tpid @ 28 pt_cont_signal ;
+
+: peek   ( addr --- u ) tpid @ swap pt_peek ;
+
+: dump   ( addr cnt --- ) tpid @ brot pt_dump ;
+
+: dasm   ( addr cnt --- ) tpid @ brot pt_disasm ;
+
+: getreg   ( reg# --- u ) tpid @ swap pt_get_reg ;
+
+: showregs   ( --- ) tpid @ regs1 pt_get_regs regs1 show-regs ;
+
+: showds   ( --- ) tpid @ dup regs1 pt_get_regs regs1 112 + @
+                     sp0 over - 8/ pt_dump ;
+
+: showas   ( --- ) tpid @ dup regs1 pt_get_regs regs1 104 + @
+                     ap0 over - 8/ pt_dump ;
+
+: showrs   ( --- ) tpid @ dup regs1 pt_get_regs regs1 120 + @
+                     rp0 over - 8/ pt_dump ;
+
+: setbrk   ( addr --- ) tpid @ swap pt_set_break bp 3! ;
+
+: clrbrk   ( --- ) bp 3@ pt_clear_break ;
+
+a> base !
+

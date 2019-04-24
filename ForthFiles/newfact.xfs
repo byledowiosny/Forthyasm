@@ -1,0 +1,21 @@
+.( The adaptive precision factorial demo is now compiling ... )
+base @ >a dec
+
+: fact   dup 0< if drop ." Argument less than zero! " 
+    else dup 2 < if drop 1 us>in
+    else dup 2 = if us>in
+    else dup >a us>in a> 2
+         do
+            i us>in m*in qsz@ dup pick 0=
+                         swap 2+ pick 0 >=
+                         and if ndrop
+                             else qsz*2 then
+         loop
+    then then then ;
+
+a> base !
+
+( Keep in mind that the quadsize will not be automatically reset to its original value.
+This would be possible if the result were output in the current quadsize before changing it.
+)
+

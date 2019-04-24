@@ -1,0 +1,48 @@
+Essential Reference Works:
+
+ The FORTH Programmer's Handbook - Edward Conklin & Elizabeth Rather
+
+ The Linux Programming Interface - Michael Kerrisk
+
+ Beginning Linux Programming - Neil Matthew & Richard Stones
+
+ Computer Systems: A Programmer's Perspective, 3rd Edition - Randal Bryant & David O'Hallaron
+
+ Elementary Functions: Algorithms and Implementation - Jean-Michel Muller
+
+ Modern Computer Arithmetic - Richard Brent & Paul Zimmermann
+
+ AMD64 Programming Guides
+
+ 32/64-Bit 80x86 Assembly Language Architecture - James Leiterman
+
+ x86-64 Assembly Language Programming with Ubuntu - Ed Jorgensen
+
+ Introduction to 64 Bit Intel Assembly Language Programming for Linux - Ray Seyfarth
+
+
+Essential Programs for Development:
+
+ yasm, gcc, udis86, ddd, gnome-terminal
+
+
+Essential Utilities:
+
+ meld, recoll, xxd, nasm, ndisasm, objdump
+
+
+Best Programming Editors:
+
+ sublime-text, jedit, vim, gedit
+
+
+Other References:
+
+ Computer Methods for Mathematical Computations - George E. Forsythe, Michael A. Malcolm, and Cleve B. Moler
+
+ On the Normalization Requirement of Divisor in Divide-and-Correct Methods - E.V. Krishnamurthy & Salil Nandi - Communications of the ACM, Volume 10, Number 12, December 1967
+
+ A Multiple-Precision Division Algorithm - Charles J. Mifsud - Communications of the ACM, Volume 13, Number 11, November 1970
+
+ Computation of Pi Using Arithmetic-Geometric Mean - Eugene Salamin - Mathematics of Computation, Volume 30, Number 135, July 1976
+

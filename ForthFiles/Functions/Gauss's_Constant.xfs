@@ -1,0 +1,6 @@
+( Gauss's Constant is equal to the reciprocal the the arithmetic-geometric mean of one and the square root of two.
+
+It is readily implemented in Forthx64 as: )
+
+   : Gre    1 uq>re 2 uq>re sqrtre agmre 1/re ;
+

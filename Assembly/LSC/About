@@ -1,0 +1,7 @@
+ Although an assembly module can't contain external references, and so cannot make C function calls, it can make Linux system calls. This example uses Linux system call #1 (write) to output a message.
+ Note that references to locations within the module must be program counter relative.
+
+ Load the code with:
+
+     include Assembly/LSC/cool.xfs
+

@@ -1,0 +1,29 @@
+Calculate sin^2(x) + cos^2(x) in double-precision, quad-precision, and extended-precision floating-point format.
+
+* Double-precision
+
+ Operands are 64 bits and use standard 64-bit stack operators.
+
+    2 sq>dp dup sqrtd swap /d sincosd x**2d swap x**2d +d dp>re cr .re
+
+
+* Quad-precision
+
+ Operands are 128 bits and use double-quad stack operators.
+
+    2 sq>qp 2dup sqrtq 2swap /q sincosq x**2q 2swap x**2q +q qp>re cr .re
+
+
+* Extended-precision (using FPU)
+
+ Operands are 80 bits, but require double-quad stack operators while in the data stack and special operators on the floating-point stack.
+
+    2 sq>f fdup fsqrt fswap f/ fsincos fx**2 fswap fx**2 f+ f>re cr .re
+
+ To see the floating-point stack of the FPU after every interpretation loop, issue:
+
+    fpstkout
+
+
+ Note that `sq>dp` and `sq>qp` are conversion operators that transform a single-quad integer to floating-point format on the stack, while sq>f changes the integer to IEEE Extended format, pops it from the Forthx64 data stack, and pushes it on the floating-point stack of the x87 FPU. Conversely, `f>re` pops an Extended precision float from the FPU stack and pushes it to the Forthx64 stack as a real number in the current quadsize.
+

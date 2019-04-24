@@ -1,0 +1,9 @@
+code: floop [ file, Assembly/Loop/floop.fcm ] endcode
+code: sloop [ file, Assembly/Loop/sloop.fcm ] endcode
+
+: floop-test gtime >a 50000000000 floop gtime a> - . ;
+: sloop-test gtime >a 50000000000 sloop gtime a> - . ;
+
+: floop-tst ?tsc >a 50000000000 floop ?tsc a> - . ;
+: sloop-tst ?tsc >a 50000000000 sloop ?tsc a> - . ;
+

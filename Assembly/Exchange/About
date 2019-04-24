@@ -1,0 +1,3 @@
+ These modules compare the register-to-memory xchg instruction with doing the same thing with only mov instructions.
+ This is an extreme example of how much slower non-RISC instructions can be. The version using the register-to-memory xchg instruction is ten times slower on an AMD octacore processor. On the other hand tests show that the register-to-register xchg instruction is efficient, and no slower than using the mov instruction.
+

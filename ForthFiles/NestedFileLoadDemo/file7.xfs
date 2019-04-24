@@ -1,0 +1,6 @@
+( If we go beyond file7, we will have exceeded the allotted 8 buffers and will incur an error message. )
+
+.( Now I'm in file7 ) cr
+cr
+.( This is far enough. I'm going back!) cr
+prompt cr

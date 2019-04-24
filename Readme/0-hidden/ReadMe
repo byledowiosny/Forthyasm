@@ -1,0 +1,46 @@
+ It is recommended that you keep the original source and compiled executable files in a separate folder from the one you use for experimentation.
+
+ Forthx64 is not designed to be its own operating system or all-in-one environment, so it does not include it's own file editor or assembler. After all, it's pretty hard to beat what's already out there. The editor of your choice is available via shell pass-through commands if desired, or in separate sessions. The assemblers of choice are yasm and GNU as, either of which can also be invoked from Forthx64 with pass-through commands. The yasm listing is also compatible with the nasm assembler, but nasm is much slower, so it is not recommended. Other assemblers would require an extensive rewrite of the code.
+
+ Forthx64 is built with yasm and gcc (or clang). Or simply gcc for the GNU version. Compiling it takes between 0.5 and 30 seconds, depending on your platform. 
+
+ An important aspect of Forthx64 is that it integrates with the shell so that the scrollback buffer contains a record of your interaction with the program. See the file, "Scrollback Buffer Navigation in Gnome Terminal", for details on how to get around in the buffer. The current version of Forthx64 is designed for Gnome Terminal 3.12 or above which has the Rewrap on Resize feature enabled. If it is run on an earlier version or with Rewrap on Resize disabled, some anamolous behavior may result, such as parts of the scrollback buffer being inadvertantly erased when the window is resized. But in general it will still function fine.
+
+ There are a few pre-compiled words included in the listing that are not strictly part of the basic system. There are two reasons for this - they serve as demonstrations of the capabilities of Forthx64, and they illustrate how to include precompiled code.
+
+ The Forthx64 commands, `ascii` and `cpuid` are pass-throughs that invoke the Linux utilities, ascii and cpuid, which are not installed by default. Install them with:
+
+Ubuntu,
+
+    sudo apt install ascii cpuid
+
+Fedora,
+
+    sudo dnf install ascii cpuid
+
+Arch,
+
+    sudo pacman -S ascii cpuid
+
+openSUSE
+
+    sudo zypper install ascii cpuid
+
+Or from within Forthx64:
+
+    shell" sudo apt install ascii cpuid"
+
+on Ubuntu for example.
+
+Otherwise, `ascii` or `cpuid` will produce an error message.
+
+ For those new to Forth, I recommend obtaining a copy of "The Forth Programmer's Handbook" by Conklin & Rather. There is also the excellent free publication, "Programming Forth" by Stephen Pelc, available from www.mpeforth.com/arena/ProgramForth.pdf. Another valuable reference is the "Forth 2012 Standard" published by the ANSI Forth 200x Standardisation Committee, November 2014.
+
+ Information about the x86_64 instruction set is available from the AMD64 Programming Guides and "32/64-Bit 80x86 Assembly Language Architecture" by James Leiterman.
+
+ For assembly language, I recommend "x86-64 Assembly Language Programming with Ubuntu" by Ed Jorgensen, a free publication available from http://www.egr.unlv.edu/~ed/assembly64.pdf, and "Introduction to 64 Bit Intel Assembly Language Programming for Linux" by Ray Seyfarth.
+
+ Excellent books on programming Linux are: "The Linux Programming Interface" by Michael Kerrisk, "Beginning Linux Programming" by Neil Matthew & Richard Stones, and "Computer Systems: A Programmer's Perspective", 3rd Edition, by Randal Bryant & David O'Hallaron.
+
+ For questions regarding the special operators unique to Forthx64, the best source of information at this point is the forthx.asm listing file or the forthx.s listing file.
+

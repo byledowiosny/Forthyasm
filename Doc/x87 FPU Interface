@@ -1,0 +1,75 @@
+ The x87 FPU interface implements a separate floating-point stack. This stack is actually composed of the eight x87 registers. Unlike the Forthx64 data stack, the FPU stack is limited, and when a new number is pushed, the entire stack is rolled up, and the last entry (8th) is dumped and replaced by its antecedent entry (7th).
+
+ FPU operators are preceded by 'f' to distinguish them from other operators. For stack operators we have, for example, `fdrop`, `fswap`, `fdup`, `fover`, etc. While typical math operators are `f+`, `f-`, `f*`, `f/`, `fsin`, `fcos`, etc. FPU operands are moved between the Forthx64 stack and the coprocessor with special operators such as, `re>f`, `xp>f`, `dp>f`, `sp>f`, `f>re`, `f>xp`, `f>dp`, and `f>sp`. Although floating-point numbers can be moved to and from the x87 in the form of single-precision, double-precision, or extended-precision floats, the processor itself does all calculations in extended precision.
+
+ The floating-point constants, 0, 1, and pi can be generated directly in st0 with `fone`, `fzero`, and `fpi`. The floating-point constant, `fe^1` is external to the FPU, and is an example of the floating-point constant defining word, `fconstant`. This operator creates its value by popping it from the top entry in the FPU stack, and when invoked, pushes that value directly to the FPU stack.
+ The floating-point store and fetch operators, `f!` and `f@` move their values from the FPU stack to memory and memory to the FPU stack using the address on the Forthx64 stack.
+
+ When doing calculations with the FPU stack it is convenient to activate the automatic stack display with `fpstkmsg`, which displays the stack at the end of each interpretation cycle. There is also `fpstksmsg` which displays both the FPU stack and Forthx64's data stack at the end of each cycle. When done, `okmsg` returns the output message to normal.
+
+ To create a constant from sqrt(2), for example, try:
+
+I:  finit stksmsg
+O:   S{ }
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = +empty
+I:  2
+O:   S{ 2 }
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = +empty
+I:  sq>f
+O:   S{ }
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = 2.0000000000000000000
+I:  fsqrt
+O:   S{ }
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = 1.4142135623730950488
+I:  fconstant fsqrt2 
+O:   S{ }
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = +empty
+I:  fsqrt2
+O:   T{ }B
+    st(7) = +empty
+    st(6) = +empty
+    st(5) = +empty
+    st(4) = +empty
+    st(3) = +empty
+    st(2) = +empty
+    st(1) = +empty
+    st(0) = 1.4142135623730950488
+I:  okmsg    ok
+
+List the dictionary with `words` and you will see `fsqrt2` at the top.
+

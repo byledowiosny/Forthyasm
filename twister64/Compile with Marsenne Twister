@@ -1,0 +1,8 @@
+In the source file under "Include external modules here", uncomment the line:
+
+; %include  "twister64/twister64.asm"
+
+and compile using:
+
+    yasm -f elf64 forthx.asm && gcc -no-pie -o forthx forthx.o forthx.c twister64/twister64.c -ludis86 -lm -lquadmath
+

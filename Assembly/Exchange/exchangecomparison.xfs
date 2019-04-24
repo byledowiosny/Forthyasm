@@ -1,0 +1,14 @@
+code: xchg1 [ file, Assembly/Exchange/xchg1.fcm ] endcode
+code: xchg2 [ file, Assembly/Exchange/xchg2.fcm ] endcode
+
+( The following use the gettimeofday C-function to give the time in seconds. )
+
+: xchg1-test gtime >a 3000000000 xchg1 gtime a> - . ;
+: xchg2-test gtime >a 3000000000 xchg2 gtime a> - . ;
+
+( The following read the Time Stamp Counter register to give the time
+ in machine cycles. )
+
+: xchg1-tst ?tsc >a 3000000000 xchg1 ?tsc a> - . ;
+: xchg2-tst ?tsc >a 3000000000 xchg2 ?tsc a> - . ;
+

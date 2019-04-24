@@ -1,0 +1,13 @@
+ In Standard Forth, when operands are tested or compared on the stack they are dropped and replaced with a flag. If they will be needed after the test, they are duplicated before testing. This is practical for 64-bit numbers where the duplication operations are quick. However, when dealing with arbitrarily large, multiprecision quantities, this approach becomes time-consuming, and since it is virtually instantaneous to drop unneeded quantities from the stack, tests and comparisons of multiquad numbers leave their operands intact and add the resulting flag to the stack. Operands not needed after the test are dropped.
+
+ Similar considerations of efficiency lead us to invent special operators for large numbers. In implementing multi-quad numerical algorithms, especially Newton-Raphson iteration, it is often desired to compare the value of an argument at the beginning of a loop with its value at the end and to leave the loop when these are equal. The value at the beginning can conveniently be kept on the auxiliary stack, and the loop would look something like:
+
+    begin 2na! ... 2na> =re until 2ndrop ... repeat 2ndrop
+
+The `2na!` operator copies the value to the auxiliary stack, while `2na>` moves the copied value back to the data stack for the comparison. After the comparison we want to keep the new value if the operands are not equal, so we drop the old value with `2ndrop`, but we could save a good deal of processing time if we compare the value on the auxiliary stack directly with that on the data stack without moving anything and drop the auxiliary stack value directly. These considerations lead to the creation of `=re2nadrop` (where the nomenclature is admittedly a little awkward), and with it our loop becomes:
+
+    begin 2na! ... =re2nadrop until ... repeat
+
+ Fortunately, there is rarely a need for such specialized constructs. But when there is, they may be readily supplied with a little inventive assembly language!
+
+

@@ -1,0 +1,15 @@
+( This demo loads file1, which displays a message followed by the prompt and loads file2, which displays a message followed by the prompt and loads file3, etc, until file7 is loaded. The last file displays a message followed by the prompt, at which point control returns to this file which displays its message.
+ A marker is used to restore the Dictionary to its state before the demo was loaded, so if we load it again by recalling the previous line with Ctrl+Up Arrow
+and pressing Enter, we won't get an error message from redefining `nfld` and `prompt`.
+ File loads can be nested up the the number of file input buffers specified {default 8}. )
+
+cr cr
+
+marker nfld
+
+: prompt   cr ." Press any key..." key drop cr ;
+
+include ForthFiles/NestedFileLoadDemo/file1.xfs
+.( Back home again!)
+
+nfld

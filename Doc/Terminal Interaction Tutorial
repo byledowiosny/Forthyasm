@@ -1,0 +1,252 @@
+ Forthx64 is equipped with a default of 32 circularly linked terminal input buffers. They are also by default quite large - 1MB each. Both the number and size of the buffers can easily be changed by the user, but three is the minimum number.
+ Each time the keyboard input routine (`strin`) is entered, it advances to the next buffer in the list, but the contents of this buffer are not displayed, even if it is not empty, unless the Alt+Down Arrow key is pressed, and as soon as any printable ASCII character is entered, or text is pasted into the buffer, its previous contents are erased.
+ The Alt+Up/Down-Arrow keys move back and forth respectively through the buffers, redisplaying any text they may contain. Whenever a line is redisplayed using these keys, it can be edited and/or resubmitted to the interpreter by pressing Enter.
+
+To see the terminal input buffers in action, type:
+
+    1 <Enter>
+    2 <Enter>
+    3 <Enter>
+    4 <Enter>
+
+Followed by:
+
+    Alt+Up Arrow
+    Alt+Up Arrow
+    Alt+Up Arrow
+    Alt+Up Arrow
+
+Then:
+
+    Alt+Down Arrow
+    Alt+Down Arrow
+    Alt+Down Arrow
+    Alt+Down Arrow
+
+
+ Terminal input is received into the current terminal input buffer until the Enter key is pressed. The line is then processed by the outer interpreter and the instructions are carried out. If there is no error, the system returns with the end-of-interpretation message, default "ok", to the terminal and waits for more input.
+ The system's reply for successful completion of an input line, the end-of-interpretation message, can be chosen from several options using `nomsg`, `okmsg`, `stkmsg`, 'stksmsg`, `fpstkmsg`, and 'fpstksmsg`. To illustrate this, put some data on the stacks with:
+
+    1 2 3 4 4a!
+
+for the data stack and the auxiliary stacks.
+
+And:
+
+    fillem
+
+For the floating-point stack.
+
+
+Dont't show a message:
+
+    nomsg
+
+Show the "ok" message:
+
+    okmsg   ok
+
+Show the data stack:
+
+    stkmsg  
+     S{ 1 2 3 4 }
+
+The "S" indicates the bottom of the data stack.
+
+Show both the data stack and the auxiliary stack:
+
+    stksmsg  
+     S{ 1 2 3 4 }
+     A{ 1 2 3 4 }
+
+The "A" indicates the bottom of the auxiliary stack.
+
+Show the x87 floating-point stack:
+
+    fillem fpstkmsg  
+    st(7) = 8.0000000000000000000
+    st(6) = 7.0000000000000000000
+    st(5) = 6.0000000000000000000
+    st(4) = 5.0000000000000000000
+    st(3) = 4.0000000000000000000
+    st(2) = 3.0000000000000000000
+    st(1) = 2.0000000000000000000
+    st(0) = 1.0000000000000000000
+
+Show both the data stack and the floating-point stack:
+
+    fpstksmsg  
+     S{ 1 2 3 4 }
+    st7 = 8.0000000000000000000 
+    st6 = 7.0000000000000000000 
+    st5 = 6.0000000000000000000 
+    st4 = 5.0000000000000000000 
+    st3 = 4.0000000000000000000 
+    st2 = 3.0000000000000000000 
+    st1 = 2.0000000000000000000 
+    st0 = 1.0000000000000000000
+
+Return to the "ok" message:
+
+    okmsg   ok
+    
+
+The data stack display shows the stack as an array of unsigned quads in the current number base, while the floating-point stack is shown as a list of real numbers in the current number base.
+
+ Note that the automatic stack displays can become inconvenient for multiquad operands on the data stack if the quadsize is large, or for real numbers output from the floating-point stack if the number of displayed radix digits (rdigs) is large. For this reason the number of digits displayed to the right of the radix point for the floating-point stack display is restricted to 64 no matter the setting of rdigs. Keeping in mind that digits beyond the 19th decimal place are no longer valid for IEEE extended-precision numbers, if the base is set to binary, digits beyond the 64th are no longer valid.
+
+To get an idea of what happens with the data stack display when the quadsize is large, copy and paste the following line:
+
+    s-numbers pire .stk cr .re default-numbers
+
+This sets the qsz to 64 and rdigs to 1024, calculates pi, outputs the stack and then the number, and sets qsz back to four and rdigs back to 19.
+The real number on the stack takes up 128 quads! Consequently, the best default setting for the end-of-interpretation message is probably the standard "ok" message. But no matter what the setting is, the stacks can always be displayed with the operators, `.stk`, `.astk`, and `.fpstk` for the data stack, auxiliary stack, and floating-point stack displays. The data and auxiliary stacks can be shown in either bottom-first of top-first order with: `<.stk`, `>.stk`, `<.astk`, and `>.astk'. 
+
+    <.stk
+     S{ 1 2 3 4 } ok
+    >.stk  
+     { 4 3 2 1 }S ok 
+    <.astk
+     A{ 1 2 3 4 } ok
+    >.astk  
+     { 4 3 2 1 }A ok 
+
+The slightly more convenient `.stk` and `.astk` are toggles between `<.stk`, `<.astk` and `>.stk`, `>.astk with the default of `<.stk` and `<.astk`. To change from one to the other use:
+
+    flip .stk   ok
+    .stk
+     { 4 3 2 1 }S
+    flip .stk   ok
+    .stk
+     S{ 1 2 3 4 } ok
+
+Additionally, both the data stack and the auxiliary stack can be shown with `.stks` and the floating-point stack, along with the data stack with `.fpstks`.
+
+    .stks
+     S{ 1 2 3 4 }
+     A{ 1 2 3 4 }
+    .fpskts
+     S{ 1 2 3 4 }
+    st7 = 8.0000000000000000000 
+    st6 = 7.0000000000000000000 
+    st5 = 6.0000000000000000000 
+    st4 = 5.0000000000000000000 
+    st3 = 4.0000000000000000000 
+    st2 = 3.0000000000000000000 
+    st1 = 2.0000000000000000000 
+    st0 = 1.0000000000000000000
+
+
+To clear the stack at any time type `clrstk`:
+
+    clrstk   ok
+    .stk
+     S{ } ok
+
+And the stack is empty. This clears only the data stack. The auxiliary stack can be separately cleared with `clrastk`, and both can be cleared with `clrstks`.
+
+Actually, typing any nonsense that the interpreter doesn't recognize will clear the data and auxiliary stacks, albeit along with an error message:
+
+    1 2 3 4 4a! .stks
+     S{ 1 2 3 4 }
+     A{ 1 2 3 4 } ok
+    flub   error: flub not found
+    .stks
+     S{ }
+     A{ } ok
+
+There is a flag, System Flag #8, that allows the auxiliary stack to be preserved across errors for debugging purposes. It is toggled using `pastk`:
+
+    1 2 3 4 4a! .stks
+     S{ 1 2 3 4 }
+     A{ 1 2 3 4 } ok
+    pastk flub   error: flub not found
+    .stks
+     S{ }
+     A{ 1 2 3 4 } ok
+
+    4a@ .stks
+     S{ 1 2 3 4 }
+     A{ 1 2 3 4 } ok
+    pastk flub   error: flub not found
+    .stks
+     S{ }
+     A{ } ok
+
+The the floating-point stack is always persistent across errors. To clear it use `finit`:
+
+    finit
+    .fpstk
+    st7 = +empty
+    st6 = +empty
+    st5 = +empty
+    st4 = +empty
+    st3 = +empty
+    st2 = +empty
+    st1 = +empty
+    st0 = +empty ok 
+
+
+A useful command is:
+
+    status
+
+Which produces:
+
+    base=10  qsz=4  rdigs=64  depth=0  adepth=0  ok
+
+Showing that the current number base is decimal, the quadsize is 4, the number of digits to the right of the radix point to display on output for fixed-point and floating-point numbers is 64, the number of 64-bit elements on the data stack is 0, and the number of 64-bit elements on the auxiliary stack is 0.
+
+
+Now enter:
+
+    8 7 6 5 4 3 2 1
+
+The terminal shows:
+
+     S{ 8 7 6 5 4 3 2 1 }
+
+The stack grows from bottom to top as a LIFO (Last In First Out) buffer.
+
+Enter:
+
+    . . . . . . . .    (8 dots)
+
+The terminal shows:
+
+    . . . . . . . .  1 2 3 4 5 6 7 8 
+     S{ }
+
+Although conceptually the stack grows from bottom to top, in the computer it grows from higher to lower memory, so in certain circumstances you may wish to see the stack display in top-to-bottom order. To change the order, issue:
+
+    flip .stk
+
+The system replies:
+
+     { }S
+
+Now if you enter a real number, the integer part will appear in the stack display on the left as it should:
+
+    77.5
+     { 0 0 0 77 9223372036854775808 0 0 0 }S
+    cr .re
+    77.5000000000000000000 
+     { }S
+
+It is important to remember that stack display always shows the stack contents as unsigned quads in the current number base.
+
+Try:
+
+    flip .stk okmsg   ok
+    -1 -2 -3 -4   ok 
+    .stk  
+     S{ 18446744073709551615 18446744073709551614 18446744073709551613 18446744073709551612 } ok 
+    hex   ok 
+    .stk  
+     S{ FFFFFFFFFFFFFFFF FFFFFFFFFFFFFFFE FFFFFFFFFFFFFFFD FFFFFFFFFFFFFFFC } ok 
+
+The stack display shows negative numbers as unsigned.
+
+
+Once you have decided what your preferences are, put them in the startup file to always configure Forthx64 your way.
+

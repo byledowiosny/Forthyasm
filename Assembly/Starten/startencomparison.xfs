@@ -1,0 +1,9 @@
+code: starten1 [ file, Assembly/Starten/starten1.fcm ] endcode
+code: starten2 [ file, Assembly/Starten/starten2.fcm ] endcode
+
+: starten1-test gtime >a 30000000000 starten1 gtime a> - . ;
+: starten2-test gtime >a 30000000000 starten2 gtime a> - . ;
+
+: starten1-tst ?tsc >a 30000000000 starten1 ?tsc a> - . ;
+: starten2-tst ?tsc >a 30000000000 starten2 ?tsc a> - . ;
+

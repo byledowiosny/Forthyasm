@@ -1,0 +1,7 @@
+ This example shows that an assembly language module may make a Linux system call without worrying about external references when assembled with:
+
+    yasm -f bin rand.asm -o rand.fcm
+
+ Load it with:
+
+    include Assembly/Rand/rand.xfs

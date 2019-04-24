@@ -1,0 +1,5 @@
+( Decompile a Radio Object )
+( Note that currently the only pre-compiled radio object is `msgout`.)
+
+: show-radio  ( <name> ) ' dup cfa>ota @ 61 <> if ." object is not a radio " drop else 8+ dup @ dup >a cr . ." entries: " 8+ dup 8+ dup a> 0 do @ cfa>nfa .name 8+ dup loop 2drop cr ." current: " @ cfa>nfa .name then ;
+

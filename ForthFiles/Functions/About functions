@@ -1,0 +1,12 @@
+ Load with:
+
+    include "ForthFiles/Functions/functions.xfs"
+
+ This file contains algorithms for calculating sin, cos, tan, sinh, cosh, tanh, and exp. These algorithms converge very fast. The algorithms for ln and atan, on the other hand converge slowly. Note however, that the function, `lnre`, below uses the arithmetic-geometric mean for the logarithm and converges fairly quickly. The same could be done for atan as well, using Brent's algorithm (see Elementary Functions: Algorithms and Implementation by Jean-Michel Muller, 2nd Edition, Birkhauser 2006). 
+ For calculating trigonometric functions, pi is needed for range reduction, but rather than calculate it anew for each function, it is precalculated as a reconstant of the maximum anticipated quadsize (in this case 8192).
+ For calculating exponential functions, ln(2) is needed for range reduction. It is precalculated as a reconstant (quadsize 8192).
+
+ This file represents more of a proof-of-concept, rather than a complete package of mathematical functions. The low-hanging fruit are the sin, cos, tan, sinh, cosh, tanh, and exp functions which converge exponentially. But the slow-converging functions can freeze the system for certain arguments for which there is no check. For example atan(pi). Incidentally, when this happens, use Ctrl+C to exit. Then restart the program.
+
+ For this version, the range reduction constants have been precalculated with a quadsize of 8192, and their binary values stored in files to be loaded directly to the stack with the `file>stack` operator and saved as reconstants. So "functions.xfs" loads instantly.
+

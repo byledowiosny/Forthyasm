@@ -1,0 +1,18 @@
+( From Forth Programmer's Handbook, Conklin & Rather, p125)
+cr .( This little test will wait for a keypress and echo it
+if it is not "q", otherwise it will throw an exception.
+To repeat the test, recall the previous line and hit Enter.)
+cr
+
+marker throwtest
+
+: could-fail ( --- c )   key dup [char] q = if 1 throw then ;
+
+: do-it ( n n --- c )   2drop could-fail ;
+
+: try-it ( --- )   1 2 ['] do-it catch if 2drop ." There was an exception" drop
+                                         else ." The character was " emit then ;
+
+try-it
+
+throwtest

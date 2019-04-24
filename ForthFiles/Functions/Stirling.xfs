@@ -1,0 +1,24 @@
+( This function calculates the number of digits in n! with base b using Stirling's Approximation )
+
+( Load functions.xfs if it is not already loaded. )
+
+[undefined] lnre [if]
+                        include ForthFiles/Functions/Functions.xfs
+                  [then]
+
+{ Thanks to John D. Cook @ www.johndcook.com.
+
+In Python:
+
+    from math import log, floor, pi
+
+    def stirling(n,b): return floor( ((n+0.5)*log(n) - n + 0.5*log(2*pi)) / log(b) ) + 1
+
+Note that the curly-bracket comment delimiter is used when parentheses are to appear in the comment.
+}
+
+: stirling  ( n b --- #digits ) >a sq>re 2ndup .5 +re 2nover lnre *re 2nover -re 2nslip
+            pi re*2 lnre re/2 +re a> sq>re lnre /re floore 1 re+sq re>sq ;
+
+( b is the number base. Note that a single precision integer is returned. )
+

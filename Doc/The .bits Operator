@@ -1,0 +1,33 @@
+ The `.bits` operator displays the bits of the top stack quad in table format. Bit numbers 0 through 63 are displayed as 0 or 1. Two rows of 32 columns are displayed in a full screen terminal. If the terminal window is not large enough to contain this display, four rows of 16 columns are displayed.
+
+ Examples:
+
+hex 7777777 .bits
+
+hex 7777777 .bits  
+                                                                                                
+|63|62|61|60|59|58|57|56|55|54|53|52|51|50|49|48|47|46|45|44|43|42|41|40|39|38|37|36|35|34|33|32|
+| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0|
+|31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
+| 0| 0| 0| 0| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1|
+
+ T{ }B
+
+ In a smaller window, the display will appear as:
+
+hex 7777777 .bits  
+                                                
+|63|62|61|60|59|58|57|56|55|54|53|52|51|50|49|48|
+| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0|
+|47|46|45|44|43|42|41|40|39|38|37|36|35|34|33|32|
+| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0| 0|
+|31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|
+| 0| 0| 0| 0| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1|
+|15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
+| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1| 0| 1| 1| 1|
+
+ T{ }B
+
+ Note that on the computer screen each bit/bit# pair is shown in a rectangular cell, but the horizontal lines don't appear when copied to the clipboard because they are created with character attributes which are not copied along with the text.
+
+

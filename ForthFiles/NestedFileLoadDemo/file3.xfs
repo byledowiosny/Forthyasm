@@ -1,0 +1,3 @@
+.( Now I'm in file3 ) cr
+prompt cr
+include ForthFiles/NestedFileLoadDemo/file4.xfs

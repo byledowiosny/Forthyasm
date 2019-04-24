@@ -1,0 +1,8 @@
+ These modules compare the loop instruction with decrement and branch.
+
+ The test shows decrement and branch to be faster than the loop instruction. How much faster depends on your platform.
+
+ Load it with:
+
+    include Assembly/Loop/loopcomparison.xfs
+

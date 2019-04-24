@@ -1,0 +1,223 @@
+qsz@ >a rdigs @ >a base @ >a dec 4 qsz! 19 rdigs !
+
+cr
+.(
+
+* Establish a marker:
+
+marker check
+)
+marker check
+
+: prompt   cr ." Press any key..." key drop cr ;
+
+prompt cr
+
+.(
+
+* Show current number base, quadsize, digits to the right of radix, and number of 64-bit stack entries:
+
+status
+)
+status
+cr prompt cr
+
+.(
+
+* Show top stack entry as a table of bits:
+
+hex 7777777 .bits dec
+)
+hex 7777777 .bits dec
+prompt cr
+
+.(
+
+* Invoke a shell command:
+
+shell" ls -al"
+)
+cr
+shell" ls -al"
+prompt cr
+
+.(
+
+* Disassemble the code field routine of a dictionary entry:
+
+' 2swap show-code
+)
+' 2swap show-code
+cr prompt
+
+.( 
+
+* Dump memory in hex in two formats:
+
+org0 16 2dup dump2 dump4
+
+)
+org0 16 2dup dump2 dump4
+prompt cr
+
+.(
+
+* Calculate the factorial of a single-quad integer argument using
+the adaptive-precision function, `uqfactin`:
+
+The system quadsize is increased as needed to accommodate the result.
+Note that the quadsize will not be automatically reset to its original value.
+This would be possible if the result were output in the current quadsize
+before changing it, as in the following definition:
+
+: .fact   dup cr .. ." ! = " qsz@ >a uqfactin .in a> qsz! ;
+
+1000 .fact
+)
+prompt
+
+: .fact   dup cr .. ." ! = " qsz@ >a uqfactin .in a> qsz! ;
+
+1000 .fact
+
+cr prompt cr
+
+.{
+
+* Perform calculations with double-precision, extended-precision, and quad-precision
+IEEE floating-point numbers:
+
+Define words for calculating i^i = e^[-pi/2] using pre-defined constants for pi and e:
+
+: i**id   ed pid negd 2 sq>dp /d y**xd ;
+
+: fi**i   fe fpi fneg 2 sq>f f/ fy**x ;
+
+: i**iq   eq piq negq 2 sq>qp /q y**xq ;
+
+Invoke the definitions:
+
+i**id dp>re cr .( Double-precision:   ) 15 r.re
+fi**i f>re  cr .( Extended-precision: ) 19 r.re 
+i**iq qp>re cr .( Quad-precision:     ) 33 r.re
+}
+
+: i**id   ed pid negd 2 sq>dp /d y**xd ;
+
+: fi**i   fe fpi fneg 2 sq>f f/ fy**x ;
+
+: i**iq   eq piq negq 2 sq>qp /q y**xq ;
+
+i**id dp>re cr .( Double-precision:   ) 15 r.re
+fi**i f>re  cr .( Extended-precision: ) 19 r.re 
+i**iq qp>re cr .( Quad-precision:     ) 33 r.re
+
+cr prompt cr
+
+.(
+
+* Include a demo within this demo
+
+include ForthFiles/PiDemo.xfs
+)
+
+include ForthFiles/PiDemo.xfs
+
+cr prompt cr
+
+.(
+
+* Show the maximum number of radix digits representable in the current quadsize and number base
+
+bin maxdigs cr .dec
+dec maxdigs cr .
+hex maxdigs cr .dec
+
+With the default quadsize of 4,
+)
+
+bin maxdigs cr space .dec .( binary digits )
+dec maxdigs cr space .    .( decimal digits )
+hex maxdigs cr space .dec .( hexadecimal digits )
+
+cr cr .( can be represented. ) dec
+
+cr prompt cr
+
+.(
+
+* Perform calculations with arbitrary-precision real numbers:
+
+Calculate Gauss's Constant, G = 1/[AGM{1,sqrt[2]}], in various quadsizes:
+
+: Gre    1 uq>re 2 uq>re sqrtre agmre 1/re ;
+
+1 qsz! Gre cr 16 r.re
+
+4 qsz! Gre cr 64 r.re
+
+8 qsz! Gre cr 128 r.re
+
+29 qsz! Gre cr 533 r.re
+)
+
+prompt cr
+
+: Gre    1 uq>re 2 uq>re sqrtre agmre 1/re ;
+
+1 qsz! .( qsz=1 rdigs=16) cr Gre cr 16 r.re cr cr
+
+4 qsz! .( qsz=4 rdigs=64) cr Gre cr 64 r.re cr cr
+
+8 qsz! .( qsz=8 rdigs=128) cr Gre cr 128 r.re cr cr
+
+29 qsz! .( qsz=29 rdigs=533) cr Gre cr 533 r.re
+
+default-numbers
+
+cr prompt cr
+
+.(
+
+* Load mathematical functions, if not already loaded, and calculate sin[sqrt{2}/2]^2 + cos[sqrt{2}/2]^2 to 2048 places:
+
+[undefined] lnre [if]
+                        include ForthFiles/Functions/Functions.xfs
+                  [then]
+
+: fancyone   qsz@ >a 256 qsz! rdigs @ >a 2048 rdigs !
+            ." sin[sqrt{2}/2]^2 + cos[sqrt{2}/2]^2 = "
+            2 sq>re sqrtre re/2 2ndup sinre 2ndup *re
+            2nswap cosre 2ndup *re +re .re
+            a> rdigs ! a> qsz! ;
+
+fancyone
+)
+prompt cr
+
+[undefined] lnre [if]
+                        include ForthFiles/Functions/Functions.xfs
+                  [then]
+
+: fancyone   qsz@ >a 256 qsz! rdigs @ >a 2048 rdigs !
+            ." sin[sqrt{2}/2]^2 + cos[sqrt{2}/2]^2 = "
+            2 sq>re sqrtre re/2 2ndup sinre 2ndup *re
+            2nswap cosre 2ndup *re +re .re
+            a> rdigs ! a> qsz! ;
+
+fancyone
+cr prompt cr
+.(
+
+* Invoke marker to restore the dictionary to its state before new definitions were compiled:
+
+check
+)
+
+check
+
+cr .( Press any key...) key drop cr
+getwinxy 2/ dup scroll-down swap 2/ 9 - spaces .( That's all, Folks! ) scroll-down
+cr .( Use Shift+Ctrl+Up/Down Arrow or Shift+PageUp/PageDown to review this demo )
+a> base ! a> rdigs ! a> qsz! okmsg
+

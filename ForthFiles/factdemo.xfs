@@ -1,0 +1,22 @@
+.( The factorial demo is now compiling ... )
+base @ >a dec
+
+: fact   dup 0< if drop ." Argument less than zero! " 
+    else dup 2 < if drop 1 uq>in
+    else dup 2 = if uq>in
+    else dup >a uq>in a> 2
+         do
+            i uq>in m*in qsz@ dup pick 0=
+                         swap 2+ pick 0 >=
+                         and if ndrop
+                             else qsz*2 then
+         loop
+    then then then ;
+
+: factdemo   qsz@ cr ." 2000! =" 
+             2000 fact cr .in cr ." Press any key ..." key drop qsz! ;
+
+: .fact   dup cr .. ." ! = " qsz@ >a fact .in a> qsz! ;
+
+a> base !
+

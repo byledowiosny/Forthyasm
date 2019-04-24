@@ -1,0 +1,36 @@
+( If 'ptrace.asm' is included, load predefined ptrace words. )
+
+ [defined] infop [if]
+
+    include ForthFiles/forthx_ptrace.xfs
+
+ [then]
+
+( If 'FPUmath.asm' is included, the following lines will set 'msgout' radio button 4 to
+output the floating-poing stack display at the end of the interpret loop in 'quit'.
+This is activated with 'fpstkmsg'. It will also set button 5 to output the data stack
+display along with the floating-point stack display, activated by 'fpstksmsg'. In
+addition, the 'msgout' error handler defer, 'msgerr' is set to deal with possible
+'fpstk' output errors. )
+
+ [defined] xp>f [if]
+
+   ' .fpstk ' msgout 48 + !
+
+   ' .fpstks ' msgout 56 + !
+
+   ' fpstkerr is msgerr
+
+( Optionally define the following example to populate the FPU stack with values. )
+
+    : fillem 9 1 do 9 i - sq>f loop ;
+
+ [then]
+
+19 rdigs !
+
+license
+
+cr .( Startup file loaded, ready! )
+
+cr .( Run demo? y or n ...) key 121 = [if] include ForthFiles/Forthx64Demo.xfs [then]

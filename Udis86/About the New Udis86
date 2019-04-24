@@ -1,0 +1,7 @@
+ This version has been cutomized for Forthx64 by changing the default decoding for some synonymous conditional mnenomics.
+ Conditionals "b" (below) and "ae" (above or equal), which test the carry flag, were changed to "c" (carry) and "nc" (no carry). Since there are three different sets of conditionals for the carry flag this change should remove some confusion.
+ The conditional "be" (below or equal) was changed to "na" (not above) to complement Udis86's "a" (above).
+ These conditionals apply only to Jcc, SETcc, and CMOVcc. The floating point conditionals for FCMOVcc are left unchanged.
+ The default mnemonics were modified by editing the relevent quoted strings in the character string array, ud_mnemonics_str[], in /libudis86/itab.c.
+ Disassembled conditional mnemonics will now match code in the Forthx64 listing.
+

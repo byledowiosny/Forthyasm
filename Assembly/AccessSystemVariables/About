@@ -1,0 +1,35 @@
+ The routine that brings pre-assembled code into the dictionary, `code:`, places the base address of the system variable table, sysvar0, in a quad 2 cells before the code itself as diagrammed below:
+
+    | sysvar0 | code length | code ... |
+
+The code is at the indirect address jumped to in r11, so sysvar0 and all the system variables are always available to to your assembly code should you need them. You can determine the offset from the base address to the variable of interest by subtracting sysvar0 from the variable name as follows:
+
+    qsz sysvar0 - .  240  ok
+
+ So here is an example of code that simply puts the current quadsize on the stack.
+
+        mov   rdi, [r11]          ; Get address of indirect jump from r12
+        mov   rsi, [rdi-16]       ; Get the quad 2 cells before the target (sysvar0)
+        mov   rdx, [rsi+240]      ; Get the variable at offset 256 from sysvar0 (qsz)
+        sub   r14, 8              ; Put value on stack
+        mov   [r14], rdx
+
+;       next
+
+        mov     r11, [r12]
+        add     r12, 8
+        jmp     [r11]
+
+ This code is in getqsz.asm, assemble it using:
+
+    yasm -f bin getqsz.asm -o getqsz.fcm
+
+Then open Forthx64 and enter:
+
+    code: getqsz [ file, Assembly/AccessSystemVariables/getqsz.fcm ] endcode
+
+Or put this code in a .xfs file and load it with:
+
+    include Assembly/AccessSystemVariables/getqsz.xfs
+
+

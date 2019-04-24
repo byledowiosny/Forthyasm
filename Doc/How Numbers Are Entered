@@ -1,0 +1,64 @@
+ The basic number unit in Forthx64 is the 64-bit quadword, or quad. A quadword is four 16-bit words, or 8 bytes, depending on how you group it.
+
+ Forthx64 interprets numbers in an arbitrary number base (2-64) which is kept in the user variable, base. To show the current base, type `status` (see below). That will show the current number base in decimal. The most used bases will be binary, decimal, and hexadecimal, but the others are there for experimentation. All bases are equal in Forthx64. Custom and familiarity are what make us prefer decimal, but when programming computers there is no better base than 16 - hexadecimal.
+
+ Numbers are entered as 64-bit integers (default), multiquad integers, multiquad fixed-point numbers, multiquad rational numbers, or multiquad floating-point numbers in the current number base. They may be entered by typing or copying and pasting them into the command line. Or they may be loaded in from a text file.
+
+
+* 64-bit Integers
+
+ Numbers without a radix point or a caret (^) are interpreted as 64-bit integers in the current number base. All the numbers that control the system - addresses, array indices, loop counters, etc - are 64 bits. If the number entered is too big for a quadword, an error message will say, "numeric overflow on input". For example:
+
+14448323472384728292347234234  error: numeric overflow on input
+
+ The largest unsigned number that can be contained in 64-bits is 18446744073709551615, roughly 18 quintillion.
+
+
+* Multiquad Integers
+
+ Numbers entered with a terminating radix point are interpreted as multiquad integers and are assigned as many quads as the system variable, qsz indicates. Type `status` to see the current qsz (quadsize). If the number entered is too big to fit in the given number of quadwords, the "numeric overflow on input" error message will appear.
+
+Enter for example,
+
+14448323472384728292347234234.
+
+ This time there is no error message, as the number is not too big to fit into a 4 quadword cell of the the default quadsize. Note that the radix point is what tells the system that this is not a 64-bit integer.
+
+
+* Multiquad Real Numbers
+
+ If a number is entered with at least one digit, including 0, to the right of the radix point, it will be interpreted as a real number. A real number is positional in the same sense an ordinary decimal number is positional, but it is binary. The integer and fractional parts are each given qsz quadword cells. If the integer part of the number entered is too big to fit in the given number of quadwords, the "numeric overflow on input" error message will appear. If the integer part is zero and the fractional part is too small to be represented in the given number of quadwords, the "underflow on input" message will result. If the integer part is not zero and the fractional part is too small to be represented with rdigs digits, the fraction underflows to zero without an error message being issued.
+
+
+* Multiquad Rational Numbers
+
+ If two arbitrary integers are entered with a slash between them (no spaces allowed), this will be interpreted as a rational fraction. A rational fraction cannot have a zero denominator. A rational fraction with a zero numerator is interpreted as rational zero (0/1) no matter what the denominator (as long as it is a nonzero, positive integer). The numerator carries the sign of the rational number. Signed denominators are not recognized. If either the numerator or the denominator is too big to be contained in a cell of the current quadsize, the "numeric overflow on input" message will be issued. A rational number appears on the stack as two mulitquad integers with the numerator on the top.
+
+Example:
+
+14448323472384728292347234234/123438234723492872392929292873492897239487234234
+
+
+* Multiquad Floating-Point Numbers
+
+ Floating-point numbers may be entered in the same way as real numbers, but have an exponent preceded by a ^ (caret). They may also be entered as integers without a radix point followed by the ^ and the exponent. The exponent must be an integer representable in 64-bits. These numbers require qsz*2 quadwords to represent. The mantissa takes 2*qsz-1 quadwords, and the exponent is given its own quadword. Floating-point numbers, being exponentials, grow quickly and can easily overflow or underflow. This does not depend on the size of the mantissa but the size of the exponent. Overflow and underflow are flagged as input errors.
+ It is important to understand that for simplicity's sake the exponent notation is abbreviated. So that, for example, 2^2 is not 2 squared, but 2*b^2, where b is the current number base. Notice also that 2^2 will represent different numbers depending on the number base current when it is entered.
+
+Examples:
+
+7.35^-4   5^3   .00763^4
+
+Enter:   hex 2^2 dec cr .fl
+Result:  5.1200000000000000000^2  ok
+
+
+* IEEE Floating-Point Formats
+
+ The IEEE formats are not interpreted directly from text input, but are derived from it by operators such as, `re>sp`, `re>dp`, `re>xp`, and `re>qp` for converting from Forthx64 real number format to IEEE single, double, extended, and quad precision formats. Similarly for output we use, `sp>re`, `dp>re`, `xp>re`, `qp>re`. There are analogous operators for converting from and to Forthx64 floating-point format and IEEE formats - `fl>qp` and `qp>fl`, for example, and special operators to convert 64-bit integers directly to any of the four IEEE formats.
+
+
+* Forthx64 Number Type Conversions
+
+ There are built-in operators to convert between real and floating-point numbers and to convert from rational to real. Not included is a built-in algorithm to convert from real to rational, which is in general a hard problem. Such an algorithm could readily be integrated into the system. There are also special operators to convert from single precision integer to multiprecision integer, rational, real, and floating-point - `sq>in`, `sq>ra`, `sq>re`, and `sq>fl`. Where the "sq" means "single quad".
+
+

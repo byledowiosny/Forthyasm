@@ -1,0 +1,14 @@
+ To compile with the Udis86 disassembler library, you will need (in addition to gcc or clang) make and python. Build Udis86 from the provided source in your home directory. Simply extract it to your home directory, go to the newly extracted directory, open a terminal there, and issue:
+
+    sudo ./configure
+    sudo make
+    sudo make install
+
+If the build fails, check the output for missing dependencies, install them, issue
+
+    sudo make clean
+
+and start again.
+
+ Note that the Udis86 library is only needed for compilation. The compiled program will run without it.
+

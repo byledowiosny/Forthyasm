@@ -1,0 +1,16 @@
+( #year is a variable holding the year )
+
+variable #year
+
+: leapyear? ( --- flag - True if leapyear )
+   #year @
+   case 400 mod 0=  of  true  exit then
+   case 100 mod 0=  of  false exit then
+   case   4 mod 0=  of  true  exit then
+   drop false ;
+   
+: days ( month# -- days-in-month )
+  case  9 =  4 =or  6 =or  11 =or of   30 exit then
+  case  2 = not                   of   31 exit then
+  drop leapyear? if  29  else  28  then ;
+

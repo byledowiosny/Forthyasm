@@ -1,0 +1,32 @@
+( The following is an adaptive precision routine for calculating
+the factorial of its single-precision integer argument as a multiprecision
+integer. If the result of a double quadsize multiplication [m*in] overflows
+a single quadsize cell, the quadsize is doubled. A quadsizd of 1 is a special
+case in which `pick` doesn't work to test the high order quad of the mixed
+multiplication. So in this case the quadsize is doubled at the outset.
+Note that it does not restore the quadsize to its previous value,
+so that if the quadsize is large, subsequent calculations will be slow!
+Also note that for large arguments the calculation may take a long 
+time. 1000000! takes on the order of 40min or longer, depending on
+your hardware.
+)
+
+: fact   ( n --- n!. ) dup 0< if drop ." Argument less than zero! " 
+    else dup 2 < if drop 1 us>in
+    else dup 2 = if us>in
+    else qsz@ 1 = if qsz*2 then
+         dup >a us>in a> 2
+         do
+            i us>in m*in qsz@ dup pick 0=
+                         swap 2+ pick 0 >=
+                         and if ndrop
+                             else qsz*2 then
+         loop
+    then then then ;
+
+( The following routine will output the factorial of its argument
+and reset the quadsize to its previous value. 
+)
+
+: .fact   ( n --- ) dup cr .. ." ! = " qsz@ >a fact .in a> qsz! ;
+

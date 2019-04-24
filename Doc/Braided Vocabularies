@@ -1,0 +1,38 @@
+ The dictionary entry object created by the header macro is preceded by two link fields. The second links dictionary entries in the order of their creation and is used to chain through the dictionary in search of a match with the current word in the current input buffer. The first is ordinarily zero and can be used for various purposes, but one built-in use for it is to link words that begin with the same wrapped ASCII character (no distinction between upper and lower case) in a 63-quad hash table contained in the vocabulary structure. This speeds up compilation dramatically, and can be handy for listing words by their first character.
+
+ Vocabularies, or wordlists, in Forthx64 come in two varieties - braidable and non-braidable. Braidable vocabularies contain the above hash table, non-braidable vocabularies do not.
+The `forthx` vocabulary is braidable and can be braided using the following command:
+
+     context @ braid
+
+Once braided, dictionary searches use the first ASCII character in a sought word as an index into the hash table to match only words which begin with that character. So for example, instead of seeking a match on the more than 900 forthx dictionary entries, the match is sought on an average of only 25 entries. However, as fast as modern processors are, the difference may not be noticeable except for very large programs.
+
+ To list a particular braid in the context vocabulary (default forthx) use:
+
+    list-braid
+
+It will output a carriage return and wait for a keystroke, say "a":
+
+atanhq  acoshq  asinhq  atan2q  atanq  acosq  asinq  absq  atanhd  acoshd  asinhd  atan2d  atand  acosd  asind  absd  at&t  attrib
+allocate  ascii  absra  agmcnt@  agmre  absre  absin  abs  asr  and  areplace  axch  apick  adrop  a@  a!  a>  array  adepth  
+ascii>printable  again  allot  also  azword  ap@  abort"  abort  asctbl  addrerr  axb0  ap0     49  entries  ok 
+context @ unbraid   ok
+
+
+ A braided vocabulary can be unbraided with the word `unbraid` Try:
+
+    context @ ubraid   ok
+
+Then:
+
+    list-braid
+
+Upon entering a character you get:
+
+   Vocabulary not braided  ok
+
+
+ If a vocabulary contains only a few entries, it may not be useful to braid it, so you may want to use a non-braidable vocabulary (defining word: `nb-vocabulary`). The Forthx64 `Root` vocabulary is a non-braidable vocabulary which contains only four words: `words`,  `order`,  `forth-wordlist`, and  `forthx`.
+
+ Note that the first link field of dictionary objects is not specifically reserved for braiding word lists. It could well be used for other purposes. A good use would be for links to documentation specific to each entry.
+

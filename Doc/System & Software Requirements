@@ -1,0 +1,23 @@
+ Forthx64 is designed exclusively for Linux on x86-64 processors (AMD or Intel). The keyboard interface is designed around the GTK+ VTE Terminal Emulator Widget, which is widely used in Linux.
+
+ To run the precompiled version you will need libc.so.6 and libm.so.6 which are included with libc6 and installed by default on most Linux systems.
+For the C Quad-precision Math Library, libquadmath.so.0 is required, provided by libquadmath0. This package is installed by default on most Linux system or as part of the gcc and clang metapackages.
+
+ To compile Forthx64, you will need to have yasm with gcc and/or clang (llvm) installed. Keep in mind that while gcc uses the GNU assembler, clang uses an assembler that is not compatible with current Forthx64 listings. So to compile with clang without gcc you must have yasm installed.
+
+ To compile with the Udis86 disassembler library, you will need (in addition to gcc or clang) make and python. Build Udis86 from the provided source in your home directory. Simply extract it to your home directory, go to the newly extracted directory, open a terminal there, and issue:
+
+    sudo ./configure
+    sudo make
+    sudo make install
+
+If the build fails, check the output for missing dependencies, install them, issue
+
+    sudo make clean
+
+and start again.
+
+Note that the Udis86 library is only needed for compilation. The compiled program will run without it because it is implicitly statically linked.
+
+ There are two pass-through utilities precompiled into the system that require installation - `ascii` and `cpuid`. The first produces a nicely laid-out ASCII table for reference. The second provides information about your machine's CPU. If these are not installed, you will simply get the error message, 'sh: 1: cpuid: not found', and no harm done.
+

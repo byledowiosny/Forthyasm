@@ -1,0 +1,28 @@
+( Pi is displayed in fixed point format and the available IEEE floating-point formats.
+The first version uses pre-compiled constants included in the system,
+while the second version converts from real to IEEE format and back. )
+
+marker pimark
+
+: pis   rdigs @ >a 50 rdigs ! cr cr 
+." Pi to 50 Places Showing Format and Number of Digits Representable" cr cr
+." Digits generated past the representable number are bogus." cr cr
+." Exact fixed-point (50):  " pire .re cr 
+." Quad-precision (33):     " piq qp>re .re cr 
+." Extended-precision (19): " fpi f>re .re cr 
+." Double-precision (15):   " pid dp>re .re cr
+." Single-precision (6):    " fpi f>sp sp>re .re 
+
+cr cr ." Pi Showing Only Representable Digits" cr cr 
+
+." Exact fixed-point (50):  "                   pire 2ndup .re cr 
+." Quad-precision (33):     " 33 rdigs ! 2ndup re>qp qp>re .re cr 
+." Extended-precision (19): " 19 rdigs ! 2ndup re>xp xp>re .re cr 
+." Double-precision (15):   " 15 rdigs ! 2ndup re>dp dp>re .re cr
+." Single-precision (6):    "  6 rdigs ! re>sp sp>re .re 
+        a> rdigs ! ;
+
+pis
+
+pimark
+

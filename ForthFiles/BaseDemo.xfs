@@ -1,0 +1,30 @@
+marker basedemo
+
+: saywha   qsz@ >a 2 qsz! ( Save current quadsize and set it to 2 for multiquad integer literal. Otherwise a quadsize of 1 would result in an error.)
+
+             [ base @ >a qsz@ >a 2 qsz! dec ] ( While compiling, save current base and quadsize, and set the quadsize to 2 and the base to decimal for the literals.)
+               219004311166120962477194630. 62
+
+             [ a> qsz! a> base ! ] ( While compiling, restore the previous quadsize and base.)
+
+               base @ >a >a ( Save current base and the 62.)
+
+                ndup bin    cr ." Base  2: " .in ( Duplicate the number and output it in base 2.)
+
+                ndup dec    cr ." Base 10: " .in ( Duplicate the number and output it in base 10.)
+
+                ndup duodec cr ." Base 12: " .in ( Duplicate the number and output it in base 12.)
+
+                ndup hex    cr ." Base 16: " .in ( Duplicate the number and output it in base 16.)
+
+                a> base !   cr ." Base 62: " .in ( Set base to 62 and output the number.)
+
+               a> base ! ( Restore the original base.)
+
+           a> qsz! ; ( Restore the original quadsize. )
+
+saywha
+
+: outit basedemo ;
+
+( basedemo)

@@ -1,0 +1,25 @@
+( Borchardt-Gauss Iteration )
+
+variable bgicnt
+
+( Note that the order of operands matters in the following mean. On the stack, b[0] is entered 1st and then a[0]. )
+
+: bgire   0 bgicnt ! begin 2nover 2na! +re re/2 2ntuck *re sqrtre
+2nswap 1 bgicnt +! (=rea>) until 2ndrop ;
+
+
+( Inverse Trigonometric Functions )
+
+( This is an effective algorithm for atan, but it is slow for operands above 64 quads in extent. )
+
+: atanre   2ndup 2ndup *re 1 re+sq sqrtre 1 uq>re bgire /re ;
+
+: asinre   2ndup 2ndup *re 1 uq>re 2nswap -re sqrtre 1 uq>re 2nswap bgire /re ;
+
+
+( The following algorithm for the logarithm function uses the Borchardt-Gauss Iteration.
+It is slow to converge for arguments larger than 64 quads. [x-1]/B{[x+1]/2,x^[1/2]} )
+
+: logre   2na! 2ndup -1 re+sq 2nswap sqrtre 2na> 1 re+sq re/2 bgire /re ;
+
+

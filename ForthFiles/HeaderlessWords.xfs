@@ -1,0 +1,3 @@
+( Utility word to list the named headerless code in Forthx64 )
+( This example dodges the issue of how to compile an offset of 24 decimal when the base is not known at compile time. The`24+` is included in the dictionary. Another way is to use: `8 3 * +`. Yet another, and perhaps the most versatile, is `[ base @ >a dec ] 24 [a> base ! ] +' This temporarily sets the base, while saving and restoring the current base at compile time.) 
+: headerless   cr code-link @ begin dup 24+ .name 1 ?spaces @ dup 0= until drop ;

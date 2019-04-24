@@ -1,0 +1,38 @@
+ Modules are completely self-contained.
+
+ External references are not allowed.
+
+ Any addressing within a module must be program counter relative. This is taken care of with the yasm assembler directive, default rel.
+
+ User variables may be accessed by offsets from the system variable base address, which is placed two quads before the code by the `code:` routine. To discover what this offset is for a particular variable, go to Forthx64 and issue:
+
+ <variable name> sysvar0 - .
+
+ Because external references are not allowed, C function calls are not available to assembly language modules. However Linux system calls can be made through the syscall instruction.
+
+ Modules must end with the code to continue execution in the Forthx64 inner interpreter, which is called "next":
+
+        mov   r11, [r12]
+        add   r12, 8
+        jmp   [r11]
+
+ Data or containers included with the module must be either put at the end of the code, or explicitly branched around. Remember that `code:` expects to find the code at the beginning of the .fcm file, so data can't go there.
+
+ A module should only use registers r11-15 for their intended Forthx64 purposes, but is likely to need only the data and auxiliary stacks, r14 and r13.
+The System Stack Pointer, rsp, should never be touched.
+
+
+ For convenience, use the included assembler module shell, called assemble.asm. Simply rename, add your code, and assemble with:
+
+    yasm -f bin <your code>.asm -o <your code>.fcm
+
+The result is a binary named <your code> with the .fcm (Forthx64 Code Module) extension.
+
+ Modules are included in the dictionary by the code: function as follows:
+
+    code: <name> [ file, Path/to/binary/file ] endcode
+
+ It is convenient to embed this definition in a .xfs file and load it with:
+
+    include Path/to/Forthx64/source/file
+

@@ -1,0 +1,155 @@
+( Trigonometric and Exponential Functions )
+
+base @ >a dec       ( Make sure base is 10 for what follows. )
+
+qsz@ >a 4096 qsz!   ( Set maximum desired quadsize to 4096. ) 
+
+( Constants pi and ln2 are needed to evaluate some functions. They have been precalculated to 65,536 places and stored in binary files, pi-8192 and ln2-8192, from where they are directly loaded to the stack and used to create constants, pi and ln2. If we wanted to do calculations with larger numbers, these constants would need to be regenerated to the maximum anticipated quadsize and saved in files using `stack>file`. To obtain maximum accuracy, `pi-guard` and `ln2-guard` are used to produce the constants. )
+
+file>stack ForthFiles/Functions/pi-8192 file>stack ForthFiles/Functions/ln2-8192 ( Put pre-calculated constants on stack. ) 
+
+reconstant ln2   reconstant pi   ( Create constants. ) 
+
+a> qsz!             ( Restore previous quadsize. ) 
+
+reveal-all          ( Enable compiler to find hidden words. )
+
+( Trigonometric Functions )
+
+variable coscnt
+
+: cosx   1 coscnt ! 1 sq>re 2ndup begin 2nbrot 2nover *re coscnt @ re/sq coscnt @ 1+ re/sq 0=re not while 2nover *re  2nrot 2nover -1 re/sq +re
+         2 coscnt +! 2nbrot 2nover *re coscnt @ re/sq coscnt @ 1+ re/sq 2nover *re 2nrot 2nover +re 2 coscnt +! repeat 4ndrop ; hidden
+
+variable sincnt
+
+: sinx   2 sincnt ! 2ndup 2ndup begin 2nbrot 2nover *re sincnt @ re/sq 0=re not while 2nover *re sincnt @ 1+ re/sq 2nrot 2nover -1 re/sq +re
+         2 sincnt +! 2nbrot 2nover *re sincnt @ re/sq 2nover *re sincnt @ 1+ re/sq 2nrot 2nover +re 2 sincnt +! repeat 2ndrop 2ndrop ; hidden
+
+: cos-range   ( argument --- argument quadrant ) absre pi re/2 4ndup /re intre 2ndup re>sq >a *re -re a> 4 mod ; hidden
+
+: cos-quad   ( argument quadrant --- cos )
+
+      case 0 = of  cosx exit then
+
+      case 1 = of  sinx negre exit then
+
+      case 2 = of  cosx negre exit then
+
+      case 3 = of  sinx exit then
+
+      drop ; hidden
+
+: cosre   cos-range cos-quad ;
+
+: sin-range   ( argument --- argument quadrant sign-flag ) sgnre >a cos-range a> ; hidden
+
+: sin-quad   ( argument quadrant sign --- sin )
+
+      0< not if
+
+      case 0 = of  sinx exit then
+
+      case 1 = of  cosx exit then
+
+      case 2 = of  sinx negre exit then
+
+      case 3 = of  cosx negre exit then
+
+             else
+
+      case 0 = of  sinx negre exit then
+
+      case 1 = of cosx negre exit then
+
+      case 2 = of sinx exit then
+
+      case 3 = of cosx exit then
+
+             then ; hidden
+
+: sinre   sin-range sin-quad ;
+
+( : tanre   2ndup sinre 2nswap cosre /re ; )
+
+( The following version of tanre runs almost twice as fast as the one that calculates both sinre and cosre. )
+
+: tanre   sinre 2ndup 2ndup *re 1 sq>re 2nswap -re sqrtre /re ;
+
+( Exponential Function )
+
+variable expcnt  ( More than simply a counter, this constant plays an essential role in the algorithm. )
+
+( Define the function. To ensure accuracy, start by doubling the quadsize of the argument and doubling the quadsize of the system. )
+
+: expre   re>2re qsz*2
+
+( Execute the range reduction and initialize the counter for the Taylor series evaluation. Here is where the overflow check
+ takes place. If the shift value is positive and larger than the number of bits in the quadsize, overflow will occur.
+ Note that underflow can't happen since e^0=1, however loss of precision can result for very small arguments. This is ignored
+ for the time being, but would be dealt with here. )
+
+ln2 4ndup /re intre re>sq a! dup 0> if 
+                                     dup qsz@ 32* 1- ( subtract 1 for sign bit ) >= if adrop qsz/2 24 throw then
+                                    then
+re*sq -re 1 expcnt ! 
+
+( At this point the reduced argument is on the stack and the shift count is on the auxiliary stack. )
+
+( Execute the Taylor series loop. )
+
+1 sq>re 2ndup
+      begin
+             2nbrot 2nover *re expcnt @ re/sq
+      0=re not while
+             2nrot 2nover +re 1 expcnt +!
+      repeat 
+4ndrop
+
+( The raw result is now on the stack and needs to be shifted. ) 
+
+a> 2nshift qsz/2 ndrop nslide ;
+
+( Hyperbolic Functions )
+
+variable cshcnt
+
+: coshx   1 cshcnt ! 1 sq>re 2ndup begin 2nbrot 2nover *re cshcnt @ re/sq 0=re not while 2nover *re cshcnt @ 1+ re/sq 2nrot 2nover +re 2 cshcnt +! repeat 2ndrop 2ndrop ; hidden
+
+variable snhcnt
+
+: sinhx   2 snhcnt ! 2ndup 2ndup begin 2nbrot 2nover *re snhcnt @ re/sq 0=re not while 2nover *re snhcnt @ 1+ re/sq 2nrot 2nover +re 2 snhcnt +! repeat 2ndrop 2ndrop ; hidden
+
+: coshre   absre 2ndup [ qsz@ >a 1 qsz! ] .5 [ a> qsz! ] <re
+              if
+                    coshx
+              else
+                    expre 2ndup 1/re +re re/2
+              then ;
+
+: sinhre   2ndup absre [ qsz@ >a 1 qsz! ] .5 [ a> qsz! ] <re
+              if
+                    sinhx
+              else
+                    sgnre >a absre expre 2ndup 1/re -re re/2 a> re*sq
+              then ;
+
+: tanhre   re*2 expre 1 re+sq 2 sq>re 2nswap /re 1 sq>re 2nswap -re ;
+
+
+( Logarithmic Functions )
+
+( From Jean-Michel Muller* - stated as:   ln = pi/[2*AGM{1,4/s}] - m*ln[2], where m is the smallest integer such that s = x*2^m > 2^[p/2], with p bits of accuracy. To satisfy the condition for m, set it to the number of bits to shift x so that its lead bit coincides with that of 2^[p/2]. The quadsize of the argument and the system is doubled for the calculation. )
+
+: lnre   sgnre 1 <> if 119 throw then re>2re qsz*2 flsbre qsz@ 32* swap - a! 2nlsl 4 sq>re 2nswap /re 1 sq>re agmre re*2 pi 2nswap /re a> sq>re ln2 *re -re qsz/2 ndrop nslide ;
+
+( The following uses y^x = exp{y*ln[x]} )
+
+: y**xre   2nswap lnre *re expre ;
+
+hide-all 
+
+a> base !  ( Restore previous number base. )
+
+( * Elementary Functions: Algorithms and Implementation - Jean-Michel Muller )
+

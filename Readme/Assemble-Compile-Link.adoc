@@ -1,0 +1,29 @@
+Compile with gcc:
+
+For normal compilation use:
+
+'yasm -f elf64 forthx.asm && gcc -no-pie -o forthx forthx.o forthx.c -ludis86 -lm'
+'-lquadmath'
+
+For debugging use:
+
+'yasm -f elf64 -g dwarf2 -l forthx.lst forthx.asm && gcc -g -no-pie -o forthx'
+'forthx.o forthx.c -ludis86 -lm -lquadmath'
+
+Compile with clang:
+
+For normal compilation use:
+
+yasm -f elf64 forthx.asm && clang -no-pie -o forthx forthx.o forthx.c -ludis86 -lm
+-lquadmath
+
+For debugging use:
+
+yasm -f elf64 -g dwarf2 -l forthx.lst forthx.asm && clang -g -no-pie -o forthx
+forthx.o forthx.c -ludis86 -lm -lquadmath
+
+
+Note that to compile Forthx64 with 'Udis86', the udis86 library must be present, but
+the compiled program will run on systems without it.
+On the other hand, 'libquadmath0' must be installed to compile or run Forthx64 with
+the library.

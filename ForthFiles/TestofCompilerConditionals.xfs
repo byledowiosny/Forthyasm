@@ -1,0 +1,26 @@
+( Test of Compiler Conditionals
+  This file consists entirely of compiler conditionals and immediately executed Forth
+ words. Nothing is compiled. If you copy the below, and paste it into the waiting buffer, you 
+ can rerun it by recalling the buffer with Alt+Up Arrow and pressing Enter. )
+
+cr
+.( This test will wait for a keypress and tell you whether you entered a digit
+and which digit.
+To repeat the test, recall the previous line with Alt+Up Arrow and press Enter ... )
+cr
+
+key dup 48 = [if] .( You entered 0)
+             [else] dup 49 = [if] .( You entered 1)
+                             [else] dup 50 = [if] .( You entered 2)
+                                             [else] dup 51 =
+ [if] .( You entered 3)
+ [else] dup 52 = [if] .( You entered 4)
+                 [else] dup 53 = [if] .( You entered 5)
+                                 [else] dup 54 = [if] .( You entered 6)
+                                                 [else] dup 55 =
+  [if] .( You entered 7)
+  [else] dup 56 = [if] .( You entered 8)
+              [else] dup 57 = [if] .( You entered 9)
+                          [else] .( You did not enter a digit)
+[then] [then] [then] [then] [then] [then] [then] [then] [then] [then] [then] drop
+

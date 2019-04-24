@@ -1,0 +1,46 @@
+ Since interaction with Forthx64 takes place in the terminal scrollback buffer, it is useful to know how to get around in the buffer. Below is a summary of available shortcuts:
+
+Navigate
+
+Shift+Home             Go to beginning of buffer
+Shift+End              Go to end of buffer
+Shift+PageUp           Scroll one page up
+Shift+PageDown         Scroll one page down
+Shift+Ctrl+Up Arrow    Scroll one line up
+Shift+Ctrl+Down Arrow  Scroll one line down
+
+Highlight
+
+ To highlight text in the scrollback buffer, the mouse or touchpad is needed. Simply move the mouse pointer to the beginning of the text, press and hold the left button, and drag to the end. The text will be highlighted, and Shift+Ins will place it at the current location of the terminal cursor.
+ A single word can be highlighted with a double-click or double-tap with the mouse cursor anywhere within it. This will highlight from the previous space to the next.
+ A single line can be highlighted with a triple-click or triple-tap with the mouse cursor anywhere within it. This will highlight from the previous hard line break to the next.
+ Highlighted text may be pasted to the current terminal cursor location with Ctrl+Ins. However, to paste it anywhere else, it must first be copied using Shift+Ctrl+C.
+ If you want to put the highlighted text in a different location outside the terminal, such as a text file, use Shift+Ctrl+C to copy it and Ctrl+V to place it. If you want to insert the copied text into a different terminal, use Shift+Ctrl+C to copy it and Shift+Ctrl+V to place it.
+
+Edit
+
+Ctrl+Ins             Paste highlighted text into current terminal at the cursor location
+Shift+Ctrl+C         Copy highlighted text
+Ctrl+V               Paste copied text into a text file
+Shift+Ctrl+V         Paste copied text into the current terminal or a different terminal at the cursor location
+
+Search
+
+Shift+Ctrl+F         Find
+Shift+Ctrl+G         Find next
+Shift+Ctrl+H         Find previous
+Shift+Ctrl+J         Clear find highlight
+
+View
+
+F11                  Toggle fullscreen
+Ctrl++               Zoom in
+Ctrl+-               Zoom out
+Ctrl+0               Normal size
+
+Clear Scrollback Buffer
+
+reset
+
+A complete list of Gnome Terminal shortcuts is found in Edit>Preferences>Shortcuts.
+

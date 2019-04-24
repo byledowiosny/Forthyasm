@@ -1,0 +1,32 @@
+ The Forthx64 Inner Interpreter is the heart of the Forth virtual machine, and could be likened to a simplistic CPU emulator. It has a Program Counter called the Interpreter Pointer, assigned to x86_64 register, r12. The following macro, `nextm`, works by loading the code-field address of each word in turn in r11, advancing the Interpreter Pointer in r12, and jumping to the executable code. Each discrete piece of code ends with this sequence, so that named pieces of code can be strung together like beads and executed one after another.
+
+    %macro  nextm   0
+
+            mov     r11,[r12]
+            add     r12,8
+            jmp     [r11]
+
+    %endmacro
+
+ In this process it is essential to preserve r12, so the system can find the subsequent code, in the same way that a CPU requires the Program Counter to be maintained no matter what happens.
+
+ The nextm macro allows sequential execution of machine-code modules, but including high-level Forth code, called colon definitions, requires an additional mechanism involving the return stack.
+The code field of a colon definition contains code, called docl0, that saves the current Interpreter Pointer on the return stack, sets r12 to the address following the definition's code field, and executes the nextm code as follows:
+ 
+    docl0:  sub   r15, 8                    ; Push current IP to return stack
+            mov   [r15], r12
+            lea   r12, [r11+8]              ; Replace it with this definition's IP
+            nextm                           ; Execute next
+
+Then, at the end of the colon definition is a piece of code to resume execution of the definition that called it:
+
+    semi0:  mov   r12, [r15]                ; Pop previous IP from return stack
+            add   r15, 8
+            nextm                           ; Execute next
+
+Combining these two fragments produces a colon definition such as the following.
+
+: bases   99 dup .bin dup .oct dup .dec .hex ;
+
+The colon compiles the name "bases" into the dictionary and puts the address of docl0 in its code field. The semicolon compiles the address of semi0 as the last entry. The words in between can be either high-level definitions like `.bin` and `.hex` or machine-code like `dup`.
+

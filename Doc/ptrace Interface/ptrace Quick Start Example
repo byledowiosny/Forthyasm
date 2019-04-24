@@ -1,0 +1,168 @@
+ Before beginning I'd like to highlight the sequence of code that drives the inner interpreter. It's a macro named "nextm".
+
+    %macro  nextm   0
+            mov     r11,[r12]
+            add     r12,8
+            jmp     [r11]
+    %endmacro
+
+Every low-level Forth word ends with this sequence, which advances the Interpreter Pointer to the next word to execute.
+
+ Copy the Forthx64 source folder to your desktop or another location for experimentation.
+
+ Edit the source file and remove the comment from the int3 instruction in `doit` at the end before the nextm macro and after the 2nd saveregsm macro (line 33322). Compile the program and open it in a terminal twice - once for the tracee and once for the tracer.
+
+ In the tracee first issue:
+
+    flip .stk stkmsg
+
+This shows the stack display with the bottom of the stack on the right:
+
+     { }S
+
+And then:
+
+    gpid .
+
+to get the tracee's process ID.
+
+ In the tracer first issue:
+
+    nomsg
+
+so that your output will be the same as in what follows.
+Enter tracee process id, <pid>, into the tracer command as follows:
+
+    <pid> tpid !
+
+to set the process ID of the tracee, followed by:
+
+    seize
+
+The tracee is now ready to debug, and it will stop whenever an exception occurs. To stop it at any time issue:
+
+    freeze
+
+from the tracer. Note that it is best to issue these commands one after another, rather than on the same line, since the tracee needs time to respond, and `freeze` may arrive before `seize` is fully acted upon.
+
+ When the tracee is stopped. The tracer can be used to dump its memory locations and examine its registers with the commands `dump` and `showregs`. There are also special commands to show the tracee's stacks - `showrs` for the return stack, `showds` for the data stack, `showas` for the auxiliary stack* - and `dasm` to disassemble the tracee's code. A breakpoint may also be set at any point in assembly code.
+
+Now try this.
+With the tracee frozen, issue:
+
+    cont
+
+Go the the tracee and enter 1 2 3 4 5 6 7 on the stack:
+
+1 2 3 4 5 6 7  
+ { 7 6 5 4 3 2 1 }S
+
+Return to the tracer, issue `freeze` followed by `showds` to display the Data Stack.
+The output will look like:
+
+4B828A8  0000000000000007 0000000000000006 0000000000000005 0000000000000004   ................................
+4B828C8  0000000000000003 0000000000000002 0000000000000001                    ........................
+
+Since after entering the numbers in the tracee, the program will be waiting for input in the line editor*, issuing `showrs` will display the return stack frame for `strin`, similar to:
+
+4382858  0000000000000000 0052313B30345B1B 0000000000000000 0000000000000000   .........[40;1R.................
+4382878  0000000000000000 0000000000000000 0000000000000000 0000000003059500   ................................
+4382898  00000000053828F0 0000000000000001 0000000000000000 0000000000000000   .(8.............................
+43828B8  0000000000000000 0000000000000000 0000000000000000 0000000004B828D8   .........................(......
+43828D8  0000000003056CF0                                                      .l......
+
+Issuing `showregs` will produce output similar to:
+
+rax=0xFFFFFFFFFFFFFDFE   rbx=0x0000000000000001 
+rcx=0x0000000000438233   rdx=0x0000000000000000 
+rsi=0x0000000000655DB8   rdi=0x0000000000000001 
+rbp=0x00000000004381B5   rsp=0x00007FFED7FED608 
+r8 =0x0000000000000000   r9 =0x0000000000000001 
+r10=0x0000000000000000   r11=0x0000000000000246 
+r12=0x0000000000956208   r13=0x0000000002F56C88 
+r14=0x0000000004B828A8   r15=0x0000000004382858 
+rip=0x0000000000438233 
+                  
+|C|Z|S|O|A|P|T|I|D|
+|0|1|0|0|0|1|0|1|0|
+
+Now type `cont` once more, and in the tracee clear the stack with `clrstk` and enter `doit`. This time the tracee will encounter the int3 instruction and stop by itself. The `showregs` command in the tracer gives:
+
+rax=0x0000000000000001   rbx=0x0000000000000002 
+rcx=0x0000000000000003   rdx=0x0000000000000004 
+rsi=0x0000000000000005   rdi=0x0000000000000006 
+rbp=0x0000000000000007   rsp=0x00007FFED7FED608 
+r8 =0x0000000000000008   r9 =0x0000000000000009 
+r10=0x000000000000000A   r11=0x000000000000000B 
+r12=0x0000000003059760   r13=0x00000000053828F0 
+r14=0x0000000004B828E0   r15=0x00000000043828B0 
+rip=0x00000000004377FC 
+                  
+|C|Z|S|O|A|P|T|I|D|
+|0|0|0|0|1|0|0|1|0|
+
+The instruction pointer points past the int3 instruction whose opcode is CC. Set the number base to hex with `hex`, highlight the 4377FC in the rip register, press Shift+Insert to paste it into the command line, and enter the line:
+
+    4377FC 1- 1 dasm
+
+To obtain the output:
+
+    4377FB  0000     int3
+
+The int3 is the only single-byte instruction in the x64's repertory.
+
+Following the int3 instruction is the nextm macro for `doit`, shown by:
+
+    4377FC B dasm  
+    4377FC  0000     mov r11, [r12]
+    437800  0004     add r12, 0x8
+    437804  0008     jmp qword [r11]
+
+A breakpoint can be placed anywhere in assembly code with `setbrk`. Let's set a breakpoint immediately before nextm in `2over`. To obtain the address, issue:
+
+    ' 2over show-code
+
+to get:
+
+    40B23F  0000     mov rcx, [r14+0x10]
+    40B243  0004     mov rdx, [r14+0x18]
+    40B247  0008     sub r14, 0x10
+    40B24B  000C     mov [r14], rcx
+    40B24E  000F     mov [r14+0x8], rdx
+    40B252  0013     mov r11, [r12]
+    40B256  0017     add r12, 0x8
+    40B25A  001B     jmp qword [r11]
+
+So we'd like to put the breakpoint at 40B252, the start of the nextm sequence:
+
+    40B252 setbrk
+
+Then enter `cont` and in the tracee type 1 1 2 2 and the stack will show:
+
+     { 2 2 1 1 }S
+
+Type `2over` in the tracee and it will stop.
+
+Now in the tracer type `showds` to get:
+
+4B828B0  0000000000000001 0000000000000001 0000000000000002 0000000000000002   ................................
+4B828D0  0000000000000001 0000000000000001                                     ................
+
+Showing the Data Stack with the `2over` operation completed.
+
+Now enter `clrbrk` in the tracer, release the tracee with `detach`, and see the result of the `2over` in the tracee stack display.
+
+Always make sure the tracee is stopped before releasing it, or you will get the following error message:
+
+    error: OS interface error: No such process
+
+This is the usual error message when there is a problem with the interface. In this case, you would simply type `freeze` and then `detach`.
+ Once the two processes are independent, they can be closed in the usual way with `bye`. Note that if you close the tracee before it is detached, it will become a zombie process, but subsequently shutting down the tracer will kill it.
+ Be sure to replace the comment delimiter before the int3 in `doit` and recompile the program when finished with this demo.
+
+ The ptrace interface is a powerful and versatile tool for debugging and analyzing system design, and it's all based on a single system call!
+
+ Notes:
+
+* Some routines commandeer register r13 for other purposes after saving the current auxiliary stack pointer. The line input routine, `strin`, is one of these, and if the `showas` command is given when r13 does not contain the auxiliary stack pointer, the tracer may get caught in an infinite loop.
+

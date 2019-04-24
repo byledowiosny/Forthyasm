@@ -1,0 +1,15 @@
+ Forthx64 is experimental and very much a work in progress. Some features are only partially implemented and are meant to point out new directions that could be pursued by the enterprising assembly language programmer. The basic system, however, is solidly established.
+
+ Forthx64 is a highly interactive and versatile language with few restrictions, but it requires more from the programmer than most other languages. Everything on the stacks is anonymous, and the programmer must know what's there and how it will be used.
+
+ Forthx64 can do everything in any number base up to 64, but be careful that you are aware of the current number base or weird, or apparently weird, things can happen. The words, `dec`, `hex`, and `bin` set the base to decimal, hexadecimal, and binary respectively without passing a number on the stack, but `10 base !` won't set the base to decimal unless it is already decimal!
+
+ When multiquad numbers are entered, their size is determined by the system quadsize (qsz) in force at the time, subsequent stack manipulations and calculations depend on this remaining the same throughout. There are no arithmetic operators or stack operators to deal with multiquad operands of different quadsizes. The only exceptions are operators to add, subtract, multiply, and divide a multiquad operand by a singe quad operand.
+
+ It is relatively easy to crash the running system, or put it into a seemingly infinite loop. If it freezes, there is the trusty Crtl+C to bail out. Note, however, that Ctrl+C is not active while the system is waiting for keyboard input, since it shouldn't be needed then, when one can simply type `bye`.
+
+ Practically anything in the system can be changed by the user, once he is familiar with assembly language and the Forth inner interpreter, but a single change in the wrong place can be hard to find and render the system inoperative. Always keep a reference copy of the downloaded program.
+
+ The `?cpuid` instruction returns 3 quads worth of information for each function number passed to it, but is not likely to be of much use without a detailed description of what this information means. Therefore, the precompiled pass-through command, `cpuid`, has been included. It invokes the Linux utility, 'cpuid', which translates everything in detail. It will produce an error message if cpuid is not installed in your system.
+
+
